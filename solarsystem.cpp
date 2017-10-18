@@ -132,4 +132,6 @@ void SolarSystem::correctInitialConditions() //Oppg f.
         body.position-=m_centerofmass; //Forskyver koord.syst slik at center of mass blir origo
     }
     m_bodies[0].velocity-=momentum/m_bodies[0].mass; //Oppdaterer solas hastighet
+    //cout << "Hastighet sol: " << m_bodies[0].velocity <<  endl;
+    //cout << "Totalt momentum" << momentum << endl;
 }
