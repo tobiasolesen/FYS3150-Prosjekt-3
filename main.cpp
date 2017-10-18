@@ -30,6 +30,9 @@ int main(int numArguments, char **arguments)
     solarSystem.createCelestialBody( vec3(1.52, 0, 0), vec3(0, 2*M_PI/sqrt(1.52), 0), 3.3e-7); // Mars
     solarSystem.createCelestialBody( vec3(0.72, 0, 0), vec3(0, 2*M_PI/sqrt(0.72), 0), 2.45e-6); //Venus
     solarSystem.createCelestialBody( vec3(9.54, 0, 0), vec3(0, 2*M_PI/sqrt(9.54), 0), 2.75e-4); //Saturn
+    solarSystem.createCelestialBody( vec3(0.39, 0, 0), vec3(0, 2*M_PI/sqrt(0.39), 0), 1.65e-7); //Mercury
+    solarSystem.createCelestialBody( vec3(19.19, 0, 0), vec3(0, 2*M_PI/sqrt(19.19), 0), 4.4e-5); //Uranus
+    solarSystem.createCelestialBody( vec3(30.06, 0, 0), vec3(0, 2*M_PI/sqrt(30.06), 0), 5.15e-5); //Neptun
 
     // To get a list (a reference, not copy) of all the bodies in the solar system, we use the .bodies() function
     vector<CelestialBody> & bodies = solarSystem.bodies(); //.bodies contains all bodies in the system
