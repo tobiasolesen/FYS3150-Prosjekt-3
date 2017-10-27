@@ -1,0 +1,75 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww14540\viewh13460\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \\section\{Method/Approach\}\
+\
+\\subsection\{The Earth-Sun system\}\
+As mentioned in the introduction, this project is all about developing a code for simulating the solar system, and we will start small with just the Earth-Sun system. Later we will expand our program to include all the planets in the solar system.\\newline\
+To begin with we make two assumptions for our two-body case: First we will assume that the Earth's orbit around the Sun is completely circular, and secondly we will assume that the Sun is completely at rest in the origin of our system. The second assumption we can do because the mass of the sun is much larger than that of the earth. It should also be mentioned that throughout this whole project we will measure time in years and lengths in Astronomical units (AU), all masses will be measured in solar masses and that the orbits around the sun is thought of as co-planar in the xy-plane.\
+\\newline\
+\
+The only force at work in our two-body system is the force of gravity, given by Newton's law of gravity. This means that the force on the earth from the sun will be given as:\
+$$\\vec\{F_G\} = -\\frac\{Gm_\{p\}m_\{s\}\}\{r^2\}\\vec\{e_\{r\}\}$$\
+which can be written in a more practical form as:\
+$$\\vec\{F_G\} = -\\frac\{Gm_\{p\}m_\{s\}\}\{r^3\}\\vec\{r\}$$\
+where G is the universal gravitational constant, $m_p$ is the mass of the planet (in this case the Earth, later called $m_E$), $m_s$ is the mass of the sun and $\\vec\{r\}$ is the position vector of the earth. Of course, the earth will also exert a force on the sun in reality (because of Newton's third law of motion), but we ignore this here because we have assumed that the sun will be at rest in our system.\
+\\newline\
+\
+We choose the initial position of the earth to be on the x-axis, and we know that it is at a distance of 1 AU away. This gives the initial position of the earth: x = 1.\\newline\
+To determine the initial velocity $v_E$ of the earth we take advantage of the circular orbit, which means that the earth will have a centripetal acceleration $a_s = \\frac\{v_E^2\}\{r\}$. Using Newton's second law $\\sum\{F\} = ma_s$, this gives us an equation that we can solve for $v_E$:\
+$$ G\\frac\{m_s m_E\}\{r^2\} = m_E\\frac\{v_E^2\}\{r\} \\Leftrightarrow v_E^2 = G\\frac\{m_s\}\{r\}$$\
+In this case we have $m_s = r = 1$, so that $v_E = \\sqrt\{G\} = 2\\pi$, where we have used that $G = 4\\pi^2$ in astronomical units.\\newline\
+\
+Now that we have the earth's initial conditions, it's time to compute the earth's orbit. This motion is governed by a set of coupled differential equations that codify Newton's law of motion due to the gravitational force. We will here use two different methods for solving these equations (both the Euler method and the velocity-Verlet method).\
+Using Newtons second law we get the following equations:\
+$$ \\frac\{d^2x\}\{dt^2\} = \\frac\{F_\{G,x\}\}\{m_E\} $$ and $$ \\frac\{d^2y\}\{dt^2\} = \\frac\{F_\{G,y\}\}\{m_E\} $$\
+These second-order equations we want to solve as two 1-order equations, so for the x-component we get the two new equations:\
+$$ \\frac\{dx\}\{dt\} = v(x, t)$$ and $$ \\frac\{dv\}\{dt\} = a(v, t) $$\
+And the equations for the y-component is produced in the same way.\\newline\
+After discretizing the above differential equations they will be ready for solving by our numerical algorithm of choice. First we take a look at the Euler method, which is given by:\
+$$ v_\{i+1\} = v_i + a*h$$\
+$$ x_\{i+1\} = x_i + v_i*h $$\
+where i indicates what timestep we are on, and our timestep h is given by $h = \\frac\{t_n - t_0\}\{N\}$, where N is the number of timesteps.\\newline\
+Another choice of method is the Velocity-Verlet method, given by:\
+$$ x_\{i+1\} = x_i + hv_i + \\frac\{h^2\}\{2\}a_i + O(h^3) $$\
+$$ v_\{i+1\} = v_i + \\frac\{h\}\{2\}( a_\{i+1\} + a_i ) + O(h^3) $$\
+where the initial values $x_0 = x(t_0), y_0 = y(t_0), v_\{x,0\} = v(t_0,x_0)$ and $v_\{y,0\} = v(t_0,y_0)$ is known.\
+Note that the term $a_\{i+1\}$ depends depends on the position $x_\{i+1\}$. This means that we need to calculate the position at the updated time t+1 before computing the next velocity.\
+\
+\\subsection\{Test of the algorithms\}\
+\
+As a test to see if our program is working correctly in the case of circular motion, we will calculate both the total energy and the angular momentum L of the system (see figures 3 and 4). The total energy is simply calculated as the sum of kinetic and potential energy, and the angular momentum is calculated as $\\vec\{L\} = \\vec\{r\} \\times \\vec\{p\}$, where $\\vec\{r\}$ and $\\vec\{p\}$ is the position vector and the (translational) momentum of the earth respectively. Both of these quantities should be conserved.\
+The total energy should be conserved because the only force working is the gravitational force, which is a conservative force.\\newline\
+To explain why the angular momentum is conserved, we will make use of the fact that the torque of the earth's orbit around the sun is $\\vec\{\\tau\} = \\frac\{d\\vec\{L\}\}\{dt\}$. The torque can also be expressed as: $\\vec\{\\tau\} = \\vec\{r\} \\times \\vec\{F_G\}$. As we know, $\\vec\{r\}$ and $\\vec\{F_G\}$ will always be parallel, which makes the cross product, and therefore the torque, equal to zero. When the torque is equal to zero we have $\\frac\{d\\vec\{L\}\}\{dt\} = 0$, which shows that angular momentum is conserved.\
+\
+\\subsection\{Object orienting\}\
+As mentioned in the introduction, we will in this project write an object oriented code. For a project like this, where we will be doing a lot of the same calculations for several different planets, object orienting is very useful. We therefore divide our program into several classes:\\newline\
+We have one class called SolarSystem which both creates and keep track of our bodies (planets) with the necessary initial conditions. In addition to this, the solarsystem class also calculates the energy and angular momentum of our system, as well as the center of mass and the motion of the sun (which isn't important for the earth-sun system, but it becomes important when we start adding more planets to our model).\\newline\
+We also have an Euler class which implements the Euler method and a velocity verlet class which implements the velocity-verlet method.\\newline\
+Our class vec3 contains all the basic functionality and operations for vectors.\
+The class celestialbody declares/initializes vectors and variables that will contain important information about our planets, mainly the position, velocity and mass.\
+\
+\\subsection\{Adding the rest of the planets\}\
+Luckily, adding the rest of the planets to our model is not that complicated when we use object orienting with classes defined in a logical way. Creating new planets is, as mentioned earlier, done by the solarsystem-class. Here we also give the initial positions and velocities. These initial conditions is determined in the same way as for the earth. One should note however, that the way we define the initial velocities is based on the assumption of circular orbits. We also ignore the forces between the planets.\\newline\
+Once we have added all the planets this way, the next step is to calculate their motion. This is done by calculating the forces working on them from the sun, their acceleration and then solving the same differential equations for each of them as we did for the earth. This is (mostly) done by using our solarsystem-class and the velocity-verlet class.\\newline\
+\
+As mentioned earlier, not only will the sun affect the planets with the gravitational force, but each of the planets will exert a force back at the sun with exactly the same size. This we know from Newton's third law of motion, and it will make the sun move accordingly.\\newline\
+We also want to expand our program further by including this motion of the sun, as well as defining the solar system's real center of mass to be the new origin of our system.\\newline\
+To achieve this, we first calculate the center of mass of our system. The center of mass $\\vec\{R\}$ is given by the formula:\
+$$\\vec\{R\} = \\frac\{1\}\{M_\{tot\}\} \\sum\{m_i \\vec\{r_i\}\}$$\
+where $m_i$ and $\\vec\{r_i\}$ is the mass and the position vector of the i'th planet respectively, and $M_\{tot\}$ is the total mass of all the planets plus the sun.\\newline\
+The sun's initial velocity is given in such a way that the total momentum of our system is equal to zero, and we keep updating the sun's velocity to make sure that the total momentum stays equal to zero as the time goes on. This will make the center of mass remain fixed. The total momentum is given as the sum of the momentum of all the objects in our system:\
+$$ P_\{tot\} = \\sum_\{i=1\}^\{i\} P_i $$\
+where $P_i$ is the momentum of object $i$, and $i$ is the total number of objects in our solar system (inculding the sun).\
+Then, to make the center of mass our new origin, we simply subtract the center of mass coordinates from each object's position.\\newline\
+Now we have a full model of the solar system.\
+\
+\\subsection\{The perihelion precision of Mercury\}\
+As mentioned it has been observed that mercury, due to relativistic effects, experiences a perihelion precession that doesn't agree completely with the Newtonian model. In order to calculate this effect we therefore need to add a general relativistic correction to the Newtonian gravitational force, so that the force becomes:\
+$$ F_G = \\frac\{G m_\{sun\} m_\{mercury\}\}\{r^2\}(1 + \\frac\{3l^2\}\{r^2c^2\}) $$\
+where r is the length of mercury's position vector, l is the magnitude of mercury's orbital angular momentum per unit mass and c is the speed of light in vacuum. The angular momentum l of mercury is calculated as: $l = |\\vec\{r\} \\times \\vec\{v\}|$.\\newline\
+Then we simulate mercury's orbit around the sun for one century with no other planets present and with the sun fixed in the origin. After a century we check the perihelion angle $\\theta_p$, using $tan\\theta_p = \\frac\{y_p\}\{x_p\} \\Rightarrow \\theta_p = arctan(\\frac\{y_p\}\{x_p\})$ where $x_p$ and $y_p$ are the x- and y-positions, respectively, of Mercury at the perihelion.}
